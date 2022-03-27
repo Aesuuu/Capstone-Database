@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@drawable/white_backg"
     tools:context=".LoginActivity">
 
-    <FrameLayout
-        android:id="@+id/frameLayout2"
-        android:layout_width="0dp"
-        android:layout_height="355dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp"
-        android:background="@color/white"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:elevation="6dp"
+        app:cardCornerRadius="6dp"
+        app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,6 +26,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:srcCompat="@drawable/logo" />
+            <!--
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="0dp"
@@ -36,13 +47,13 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+                -->
 
             <EditText
                 android:id="@+id/login_email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
                 android:autofillHints=""
                 android:background="@drawable/rectangle"
@@ -53,7 +64,7 @@
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
             <EditText
                 android:id="@+id/login_password"
@@ -63,24 +74,24 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/rectangle"
+                android:drawableEnd="@drawable/ic_lock"
                 android:hint="@string/password"
                 android:inputType="textPassword"
                 android:padding="10dp"
                 android:textSize="14sp"
-                android:drawableEnd="@drawable/ic_lock"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/login_email" />
 
             <TextView
-                android:id="@+id/forgotPassword"
+                android:id="@+id/tv_forgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
                 android:clickable="false"
-                android:text="@string/forgot_my_password"
+                android:text="Forgot your password?"
                 android:textColor="@color/blue"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -91,7 +102,9 @@
                 android:layout_width="0dp"
                 android:layout_height="55dp"
                 android:layout_marginStart="64dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="64dp"
+                android:layout_marginBottom="32dp"
                 android:backgroundTint="@color/main_color"
                 android:text="@string/log_in_button"
                 android:textAllCaps="true"
@@ -100,16 +113,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/forgotPassword" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_forgotPassword" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/createAccount"
         android:layout_width="150dp"
         android:layout_height="70dp"
-        android:layout_marginTop="32dp"
         android:backgroundTint="@color/white"
         android:text="@string/create_acct_btn"
         android:textAllCaps="true"
@@ -119,14 +131,13 @@
         app:layout_constraintEnd_toStartOf="@+id/logInGuest"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/logInGuest"
         android:layout_width="150dp"
         android:layout_height="70dp"
-        android:layout_marginTop="32dp"
         android:backgroundTint="@color/white"
         android:text="@string/guest_btn"
         android:textAllCaps="true"
@@ -136,6 +147,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/createAccount"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintTop_toTopOf="@+id/createAccount"
         app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

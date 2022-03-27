@@ -44,7 +44,7 @@ public class ProductData extends DrawerBaseActivity {
 
         // INTENT FROM ADAPTER
         Intent extra = getIntent();
-        String productId = extra.getStringExtra("id");;
+        String productId = extra.getStringExtra("id");
         String productCategory = extra.getStringExtra("category");
 
         // TEXTVIEW FROM LAYOUT

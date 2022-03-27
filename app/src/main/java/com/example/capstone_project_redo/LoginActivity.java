@@ -3,6 +3,7 @@ package com.example.capstone_project_redo;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -29,17 +30,20 @@ public class LoginActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        progressDialog = new ProgressDialog(this);
+
         Button createAccount = (Button) findViewById(R.id.createAccount);
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, CreateAccountPart1.class));
+                startActivity(new Intent(LoginActivity.this, ConsumerRegister.class));
             }
         });
 
@@ -81,17 +85,28 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         if (uAuth.getCurrentUser().getUid().equals("y0HGN02WYaTK4GaefHjpSQUNzyz2")) {
                                             startActivity(new Intent(LoginActivity.this, AdminActivity.class));
+
+                                            progressDialog.setTitle("Please Wait");
+                                            progressDialog.setMessage("Logging you in...");
+                                            progressDialog.show();
                                         }
                                         else if (uAuth.getCurrentUser().isEmailVerified()) {
                                             databaseReference = database.getReference("users").child(uAuth.getCurrentUser().getUid());
                                             databaseReference.addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    String activation = (String) snapshot.child("activate").getValue();
-                                                    if (activation.equals("true")) {
+                                                    String type = (String)snapshot.child("typeOfUser").getValue();
+
+                                                    if (type.equals("Consumer") || type.equals("Vendor")) {
                                                         startActivity(new Intent(LoginActivity.this, HomePage.class));
-                                                    } else {
-                                                        Toast.makeText(LoginActivity.this, "Please wait 2-3 working days for Admin to enable your account", Toast.LENGTH_SHORT).show();
+
+                                                        progressDialog.setTitle("Please Wait");
+                                                        progressDialog.setMessage("Logging you in...");
+                                                        progressDialog.show();
+                                                    }
+                                                    else {
+                                                        //Toast.makeText(LoginActivity.this, "Please wait 2-3 working days for Admin to enable your account", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(LoginActivity.this, "Error logging in your account.", Toast.LENGTH_SHORT).show();
                                                         uAuth.signOut();
                                                     }
                                                 }

@@ -61,7 +61,7 @@
             android:textColor="@color/black"
             android:layout_toRightOf="@+id/tv_myProductPrice"
             android:layout_below="@+id/tv_myProductCategory"
-            android:layout_marginLeft="10dp" />
+            android:layout_marginLeft="5dp" />
 
         <TextView
             android:id="@+id/tv_myProductDesc"

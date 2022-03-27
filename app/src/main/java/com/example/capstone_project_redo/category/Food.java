@@ -16,7 +16,7 @@ import com.example.capstone_project_redo.R;
 import com.example.capstone_project_redo.adapter.CategoryInsideAdapter;
 import com.example.capstone_project_redo.databinding.CategoryInsideBinding;
 import com.example.capstone_project_redo.model.CategoryInsideModel;
-import com.example.capstone_project_redo.nav.CategoryActivity;
+import com.example.capstone_project_redo.nav.CategoryProduct;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -316,7 +316,7 @@ public class Food extends DrawerBaseActivity implements CategoryInsideAdapter.On
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(Food.this, CategoryActivity.class));
+        startActivity(new Intent(Food.this, CategoryProduct.class));
         finish();
     }
 }

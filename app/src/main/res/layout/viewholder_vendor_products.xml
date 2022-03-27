@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="6dp"
+    android:elevation="6dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
+
+        <ImageView
+            android:id="@+id/iv_vProductImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/ic_launcher_foreground" />
+
+
+        <TextView
+            android:id="@+id/tv_vProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Product Name"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@+id/iv_vProductImage"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:id="@+id/tv_vProductCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Product Category"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@+id/iv_vProductImage"
+            android:layout_below="@+id/tv_vProductName"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:id="@+id/tv_vProductPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Product Price"
+            android:textSize="20sp"
+            android:textColor="@color/red"
+            android:layout_toRightOf="@+id/iv_vProductImage"
+            android:layout_below="@+id/tv_vProductCategory"
+            android:layout_marginLeft="10dp" />
+
+
+    </RelativeLayout>
+
+
+
+</androidx.cardview.widget.CardView>

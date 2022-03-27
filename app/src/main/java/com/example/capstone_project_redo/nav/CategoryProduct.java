@@ -8,6 +8,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.capstone_project_redo.DrawerBaseActivity;
 import com.example.capstone_project_redo.R;
@@ -29,13 +31,15 @@ import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
-public class CategoryActivity extends DrawerBaseActivity implements CategoryAdapter.OnCategoryListener {
+public class CategoryProduct extends DrawerBaseActivity implements CategoryAdapter.OnCategoryListener {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
     ProgressDialog loadingProgress;
     RecyclerView categoryList;
     CategoryAdapter categoryAdapter;
+
+    Button vendors;
 
     ActivityCategoryBinding activityCategoryBinding;
 
@@ -53,6 +57,14 @@ public class CategoryActivity extends DrawerBaseActivity implements CategoryAdap
         loadingProgress.setCancelable(false);
         loadingProgress.show();
 
+        vendors = findViewById(R.id.btn_catVendor);
+        vendors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(CategoryProduct.this, CategoryVendor.class));
+            }
+        });
+
         loadData();
     }
 
@@ -69,7 +81,7 @@ public class CategoryActivity extends DrawerBaseActivity implements CategoryAdap
     }
 
     private void loadData() {
-        categoryList = findViewById(R.id.lv_category);
+        categoryList = findViewById(R.id.lv_categoryProduct);
         categoryList.setHasFixedSize(true);
         categoryList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -129,7 +141,7 @@ public class CategoryActivity extends DrawerBaseActivity implements CategoryAdap
     }
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(CategoryActivity.this, HomePage.class));
+        startActivity(new Intent(CategoryProduct.this, HomePage.class));
         finish();
     }
 }

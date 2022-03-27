@@ -13,7 +13,7 @@ import com.example.capstone_project_redo.R;
 import com.example.capstone_project_redo.adapter.CategoryInsideAdapter;
 import com.example.capstone_project_redo.databinding.CategoryInsideBinding;
 import com.example.capstone_project_redo.model.CategoryInsideModel;
-import com.example.capstone_project_redo.nav.CategoryActivity;
+import com.example.capstone_project_redo.nav.CategoryProduct;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -76,7 +76,6 @@ public class Basic extends DrawerBaseActivity implements CategoryInsideAdapter.O
         categoryInsideAdapter = new CategoryInsideAdapter(this, options);
         insideList.setAdapter(categoryInsideAdapter);
 
-        databaseReference = database.getReference("products");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -102,7 +101,7 @@ public class Basic extends DrawerBaseActivity implements CategoryInsideAdapter.O
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(Basic.this, CategoryActivity.class));
+        startActivity(new Intent(Basic.this, CategoryProduct.class));
         finish();
     }
 

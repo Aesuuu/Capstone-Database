@@ -30,7 +30,7 @@ public class HomePage extends DrawerBaseActivity {
         toCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HomePage.this, CategoryActivity.class));
+                startActivity(new Intent(HomePage.this, CategoryProduct.class));
             }
         });
         toDti.setOnClickListener(new View.OnClickListener() {

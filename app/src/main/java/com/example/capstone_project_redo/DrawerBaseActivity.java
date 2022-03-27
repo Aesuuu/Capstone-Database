@@ -7,16 +7,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.capstone_project_redo.admin.ActiveUsers;
 import com.example.capstone_project_redo.admin.PendingUsers;
 import com.example.capstone_project_redo.nav.AboutActivity;
-import com.example.capstone_project_redo.nav.CategoryActivity;
+import com.example.capstone_project_redo.nav.CategoryProduct;
 import com.example.capstone_project_redo.nav.HomePage;
 import com.example.capstone_project_redo.nav.MyProductsActivity;
 import com.example.capstone_project_redo.nav.MyProfileActivity;
@@ -24,8 +27,16 @@ import com.example.capstone_project_redo.nav.SRPActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class DrawerBaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -47,16 +58,32 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            hideItem();
-        }
-        else if (user.getUid().equals("y0HGN02WYaTK4GaefHjpSQUNzyz2")) {
-            hidefromAdmin();
-        }
-        else {
-            hideAdmin();
-        }
+
+
+        assert user != null;
+        databaseReference.child("users").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String type = (String)snapshot.child("typeOfUser").getValue();
+                assert type != null;
+                if (type.equals("Consumer")) {
+                    hideItem();
+                }
+                else if (type.equals("Vendor")){
+                    hideAdmin();
+                }
+                else if (user.getUid().equals("y0HGN02WYaTK4GaefHjpSQUNzyz2")) {
+                    hidefromAdmin();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -70,7 +97,7 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
                 break;
 
             case R.id.nav_category:
-                startActivity(new Intent(this, CategoryActivity.class));
+                startActivity(new Intent(this, CategoryProduct.class));
                 overridePendingTransition(0, 0);
                 break;
 
@@ -105,8 +132,26 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
                 break;
 
             case R.id.nav_logout:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Are you sure?");
+                builder.setMessage("Pressing 'Confirm' will log out your account.");
+
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(new Intent(getApplicationContext(), LoginActivity.class)));
+                        finish();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(), "Log Out Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.show();
                 overridePendingTransition(0, 0);
                 break;
         }
