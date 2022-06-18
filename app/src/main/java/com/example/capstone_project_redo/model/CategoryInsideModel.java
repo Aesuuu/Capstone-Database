@@ -1,13 +1,13 @@
 package com.example.capstone_project_redo.model;
 
 public class CategoryInsideModel {
-    String name, category, seller, price, priceExtension, description, imageUrl, productId;
+    String name, category, seller, price, priceExtension, description, imageUrl, productId, id;
 
     CategoryInsideModel() {
 
     }
 
-    public CategoryInsideModel(String name, String category, String seller, String price, String priceExtension, String description, String imageUrl, String productId) {
+    public CategoryInsideModel(String name, String category, String seller, String price, String priceExtension, String description, String imageUrl, String productId, String id) {
         this.name = name;
         this.category = category;
         this.seller = seller;
@@ -16,6 +16,7 @@ public class CategoryInsideModel {
         this.description = description;
         this.imageUrl = imageUrl;
         this.productId = productId;
+        this.id = id;
     }
 
     public String getName() {
@@ -80,5 +81,13 @@ public class CategoryInsideModel {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

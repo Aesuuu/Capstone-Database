@@ -17,50 +17,63 @@
     <item
         android:id="@+id/filterMeat"
         android:title="Meat Only"
-        app:showAsAction="collapseActionView" />
+        app:showAsAction="collapseActionView">
+        <menu>
 
-        <group android:id="@+id/group_meat">
-            <item
-                android:id="@+id/itemChicken"
-                android:title="Chicken"
-                app:showAsAction="collapseActionView"/>
-            <item
-                android:id="@+id/itemPork"
-                android:title="Pork"
-                app:showAsAction="collapseActionView"/>
-            <item
-                android:id="@+id/itemBeef"
-                android:title="Beef"
-                app:showAsAction="collapseActionView"/>
-        </group>
+            <group android:id="@+id/group_meat">
+                <item
+                    android:id="@+id/itemChicken"
+                    android:title="Chicken"
+                    app:showAsAction="collapseActionView"/>
+                <item
+                    android:id="@+id/itemPork"
+                    android:title="Pork"
+                    app:showAsAction="collapseActionView"/>
+                <item
+                    android:id="@+id/itemBeef"
+                    android:title="Beef"
+                    app:showAsAction="collapseActionView"/>
+            </group>
+        </menu>
+    </item>
+
     <item
         android:id="@+id/filterProcessed"
         android:title="Processed Food Only"
-        app:showAsAction="collapseActionView"/>
-        <group android:id="@+id/group_processed">
-            <item
-                android:id="@+id/itemFrozen"
-                android:title="Frozen Food"
-                app:showAsAction="collapseActionView"/>
-            <item
-                android:id="@+id/itemCanned"
-                android:title="Canned Goods"
-                app:showAsAction="collapseActionView"/>
-        </group>
+        app:showAsAction="collapseActionView">
+        <menu>
+
+            <group android:id="@+id/group_processed">
+                <item
+                    android:id="@+id/itemFrozen"
+                    android:title="Frozen Food"
+                    app:showAsAction="collapseActionView"/>
+                <item
+                    android:id="@+id/itemCanned"
+                    android:title="Canned Goods"
+                    app:showAsAction="collapseActionView"/>
+            </group>
+        </menu>
+    </item>
+
     <item
         android:id="@+id/filterSeafood"
         android:title="Seafood Only"
-        app:showAsAction="collapseActionView"/>
-        <group android:id="@+id/group_seafood">
-            <item
-                android:id="@+id/itemFish"
-                android:title="Fish"
-                app:showAsAction="collapseActionView"/>
-            <item
-                android:id="@+id/itemShellfish"
-                android:title="Shellfish"
-                app:showAsAction="collapseActionView"/>
-        </group>
+        app:showAsAction="collapseActionView">
+        <menu>
+
+            <group android:id="@+id/group_seafood">
+                <item
+                    android:id="@+id/itemFish"
+                    android:title="Fish"
+                    app:showAsAction="collapseActionView"/>
+                <item
+                    android:id="@+id/itemShellfish"
+                    android:title="Shellfish"
+                    app:showAsAction="collapseActionView"/>
+            </group>
+        </menu>
+    </item>
     <item
         android:id="@+id/filterFruits"
         android:title="Fruits Only"

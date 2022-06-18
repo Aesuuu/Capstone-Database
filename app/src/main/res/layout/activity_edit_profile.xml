@@ -93,15 +93,14 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.49"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/e_mobilenumber"
-                    app:layout_constraintVertical_bias="0.966" />
+                    app:layout_constraintTop_toBottomOf="@+id/et_stallDesc" />
 
                 <TextView
                     android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
-                    android:text="Personal Information"
+                    android:text="User Information"
                     android:layout_marginLeft="10dp"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -158,87 +157,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_lastname" />
 
-
-                <TextView
-                    android:id="@+id/tv_age"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Age"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="15sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/e_lastname" />
-
-
-                <EditText
-                    android:id="@+id/e_age"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center"
-                    android:ems="10"
-                    android:inputType="number"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.473"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_age" />
-
-
-
-                <TextView
-                    android:id="@+id/tv_municipality"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Municipality"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="15sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/e_age" />
-
-
-
-                <EditText
-                    android:id="@+id/e_municipality"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:ems="10"
-                    android:gravity="center"
-                    android:inputType="text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.473"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_municipality" />
-
-
-
-                <TextView
-                    android:id="@+id/tv_province"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Province"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="15sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/e_municipality" />
-
-                <EditText
-                    android:id="@+id/e_province"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center"
-                    android:ems="10"
-                    android:inputType="text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.473"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_province" />
-
-
                 <TextView
                     android:id="@+id/tv_mobile"
                     android:layout_width="wrap_content"
@@ -247,24 +165,74 @@
                     android:text="Mobile Number"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/e_province" />
-
+                    app:layout_constraintTop_toBottomOf="@+id/e_lastname" />
 
                 <EditText
-                    android:id="@+id/e_mobilenumber"
+                    android:id="@+id/e_mobile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:gravity="center"
                     android:ems="10"
-                    android:inputType="text"
+                    android:inputType="number"
+                    android:maxLength="11"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.473"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_mobile" />
 
+                <TextView
+                    android:id="@+id/tv_marketAdd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Market Address"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/e_mobile" />
 
+                <EditText
+                    android:id="@+id/e_marketAdd"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.473"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_marketAdd" />
+
+                <TextView
+                    android:id="@+id/tv_stallDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Stall Description"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/e_marketAdd" />
+
+
+                <EditText
+                    android:id="@+id/et_stallDesc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="200"
+                    android:maxLines="5"
+                    android:padding="10dp"
+                    android:scrollbars="none"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_stallDesc" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>

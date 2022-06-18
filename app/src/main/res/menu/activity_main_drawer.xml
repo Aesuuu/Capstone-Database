@@ -5,37 +5,33 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_dashboard"
             android:title="@string/menu_home"
-            android:icon="@drawable/ic_home" />
+            android:icon="@drawable/ic_dashboard" />
         <item
-            android:id="@+id/nav_dtisrp"
+            android:id="@+id/nav_dti"
             android:title="@string/menu_dtisrp"
-            android:icon="@drawable/ic_dti_srp" />
+            android:icon="@drawable/ic_dti" />
         <item
             android:id="@+id/nav_category"
             android:title="@string/menu_category"
             android:icon="@drawable/ic_store" />
         <item
-            android:id="@+id/nav_profile"
-            android:title="@string/menu_profile"
-            android:icon="@drawable/ic_user" />
-        <item
             android:id="@+id/nav_upload"
             android:title="@string/menu_upload"
             android:icon="@drawable/ic_category" />
         <item
+            android:id="@+id/nav_account"
+            android:title="My Account"
+            android:icon="@drawable/ic_account" />
+        <item
+            android:id="@+id/nav_reviews"
+            android:title="Reviews"
+            android:icon="@drawable/ic_reviews" />
+        <item
             android:id="@+id/nav_about"
             android:title="@string/menu_about"
             android:icon="@drawable/ic_about" />
-        <item
-            android:id="@+id/nav_pending"
-            android:title="@string/menu_pending"
-            android:icon="@drawable/ic_pending" />
-        <item
-            android:id="@+id/nav_active"
-            android:title="@string/menu_active"
-            android:icon="@drawable/ic_active" />
         <item
             android:id="@+id/nav_logout"
             android:title="@string/menu_logout"

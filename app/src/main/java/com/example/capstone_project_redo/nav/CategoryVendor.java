@@ -29,6 +29,7 @@ import com.example.capstone_project_redo.model.CategoryModel;
 import com.example.capstone_project_redo.model.MyListModel;
 import com.example.capstone_project_redo.model.VendorsModel;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -47,6 +49,7 @@ public class CategoryVendor extends DrawerBaseActivity implements CategoryVendor
     RecyclerView vendorList;
     CategoryVendorAdapter vendorAdapter;
 
+    String type = "Username";
     Button products;
 
     ActivityCategoryVendorBinding vendorBinding;
@@ -95,7 +98,7 @@ public class CategoryVendor extends DrawerBaseActivity implements CategoryVendor
 
         FirebaseRecyclerOptions<VendorsModel> options;
         options = new FirebaseRecyclerOptions.Builder<VendorsModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("users"), VendorsModel.class)
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("users").child("vendor").orderByChild(type), VendorsModel.class)
                 .build();
 
         vendorAdapter = new CategoryVendorAdapter(this, options);
@@ -121,21 +124,21 @@ public class CategoryVendor extends DrawerBaseActivity implements CategoryVendor
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_vendors, menu);
+        MenuItem item = menu.findItem(R.id.vSearch);
 
-        getMenuInflater().inflate(R.menu.search, menu);
-        MenuItem item = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) item.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                txtSearch(query);
+                txtSearch(query, type);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
-                txtSearch(query);
+                txtSearch(query, type);
                 return false;
             }
         });
@@ -143,13 +146,39 @@ public class CategoryVendor extends DrawerBaseActivity implements CategoryVendor
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.vFName:
+                item.setChecked(true);
+                type = "FirstName";
+                return true;
+            case R.id.vLName:
+                item.setChecked(true);
+                type = "LastName";
+                return true;
+            case R.id.vUserName:
+                item.setChecked(true);
+                type = "Username";
+                return true;
+            case R.id.vNumber:
+                item.setChecked(true);
+                type = "MobileNumber";
+                return true;
 
-    private void txtSearch(String str) {
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    private void txtSearch(String str, String type) {
 
         FirebaseRecyclerOptions<VendorsModel> options =
                 new FirebaseRecyclerOptions.Builder<VendorsModel>()
-                        .setQuery(FirebaseDatabase.getInstance().getReference().child("users")
-                                .orderByChild("Username").startAt(str).endAt(str+"~"), VendorsModel.class)
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("users").child("vendor")
+                                .orderByChild(type).startAt(str).endAt(str+"~"), VendorsModel.class)
                         .build();
         vendorAdapter = new CategoryVendorAdapter(this, options);
         vendorAdapter.startListening();
@@ -164,7 +193,26 @@ public class CategoryVendor extends DrawerBaseActivity implements CategoryVendor
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(CategoryVendor.this, HomePage.class));
-        finish();
+        FirebaseAuth touAuth = FirebaseAuth.getInstance();
+        String typeOfUser = Objects.requireNonNull(touAuth.getCurrentUser()).getUid();
+        DatabaseReference dataRef = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
+        dataRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("vendor").hasChild(typeOfUser)) {
+                    startActivity(new Intent(CategoryVendor.this, Dashboard.class));
+                    finish();
+                }
+                else if (snapshot.child("consumer").hasChild(typeOfUser)) {
+                    startActivity(new Intent(CategoryVendor.this, HomePage.class));
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

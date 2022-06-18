@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/srSearch"
+        android:icon="@drawable/ic_search"
+        android:title="Search"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView"/>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:title="Select Search Query:"
+            android:titleCondensed="Search Options:"
+            app:showAsAction="never"
+            android:checkable="false"/>
+        <item
+            android:id="@+id/srFName"
+            android:title="First Name"
+            android:checked="true"/>
+        <item
+            android:id="@+id/srLName"
+            android:title="Last Name"/>
+        <item
+            android:id="@+id/srRating"
+            android:title="Rating"/>
+    </group>
+</menu>

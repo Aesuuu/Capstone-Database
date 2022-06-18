@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.capstone_project_redo">
-
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the "MyLocation" functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -11,11 +16,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Capstone_Project_Redo">
-        <activity android:name=".category.VendorData"></activity>
+        <activity android:name=".ReportVendor"></activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".ChangePassword" />
+        <activity android:name=".VendorCarousel" />
+        <activity android:name=".ConsumerCarousel" />
+        <activity android:name=".LinForgotPass" />
+        <activity android:name=".nav.Dashboard" />
+        <activity android:name=".nav.Reviews" />
+        <activity android:name=".nav.MyAccount" />
+        <activity android:name=".category.VendorData" />
         <activity android:name=".ConsumerRegister" />
-        <activity android:name=".admin.ActiveUsers" />
-        <activity android:name=".admin.PendingUsers" />
-        <activity android:name=".AdminActivity" />
         <activity android:name=".AddItemActivity$EditProductActivity" />
         <activity android:name=".category.Basic" />
         <activity android:name=".category.Food" />
@@ -31,7 +56,7 @@
         <activity android:name=".nav.MyProductsActivity" />
         <activity android:name=".nav.CategoryProduct" />
         <activity android:name=".nav.CategoryVendor" />
-        <activity android:name=".nav.MyProfileActivity" />
+        <activity android:name=".MyProfileActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".DrawerBaseActivity" />
         <activity

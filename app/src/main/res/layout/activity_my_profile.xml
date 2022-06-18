@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".nav.MyProfileActivity" >
+    tools:context=".MyProfileActivity" >
 
 
     <ScrollView
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/iv_profilePicture"
+                android:id="@+id/iv_acctImage"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
                 android:layout_gravity="center"
@@ -46,7 +46,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_profilePicture" />
+                app:layout_constraintTop_toBottomOf="@+id/iv_acctImage" />
 
             <!-- PERSONAL INFO -->
 

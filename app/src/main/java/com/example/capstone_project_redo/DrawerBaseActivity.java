@@ -8,21 +8,26 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.capstone_project_redo.admin.ActiveUsers;
-import com.example.capstone_project_redo.admin.PendingUsers;
+import com.bumptech.glide.Glide;
+import com.example.capstone_project_redo.category.VendorData;
 import com.example.capstone_project_redo.nav.AboutActivity;
 import com.example.capstone_project_redo.nav.CategoryProduct;
+import com.example.capstone_project_redo.nav.Dashboard;
 import com.example.capstone_project_redo.nav.HomePage;
+import com.example.capstone_project_redo.nav.MyAccount;
 import com.example.capstone_project_redo.nav.MyProductsActivity;
-import com.example.capstone_project_redo.nav.MyProfileActivity;
+import com.example.capstone_project_redo.nav.Reviews;
 import com.example.capstone_project_redo.nav.SRPActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,13 +38,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class DrawerBaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
 
+    ProgressDialog loadingProgress;
+    FirebaseAuth uAuth = FirebaseAuth.getInstance();
+
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+
+    ImageView imageProfile;
+    TextView name;
 
     @Override
     public void setContentView(View view) {
@@ -47,6 +60,12 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
         FrameLayout container = drawerLayout.findViewById(R.id.activityContainer);
         container.addView(view);
         super.setContentView(drawerLayout);
+
+
+        loadingProgress = new ProgressDialog(this);
+        loadingProgress.setMessage("Loading, please wait...");
+        loadingProgress.setCancelable(false);
+        loadingProgress.show();
 
         Toolbar toolbar = drawerLayout.findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
@@ -59,31 +78,67 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
         toggle.syncState();
 
 
+
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user!=null && user.isEmailVerified()) {
+
+            databaseReference.child("users").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    imageProfile = findViewById(R.id.iv_navPicture);
+                    name = findViewById(R.id.tv_navName);
+
+                    if (snapshot.child("consumer").hasChild(user.getUid())) {
+                        hideItem();
+
+                        String profile = (String) snapshot.child("consumer").child(user.getUid()).child("ImageProfile").getValue();
+                        String firstName = (String) snapshot.child("consumer").child(user.getUid()).child("FirstName").getValue();
+                        String lastName = (String) snapshot.child("consumer").child(user.getUid()).child("LastName").getValue();
+
+                        name.setText(firstName + " " + lastName);
+                        try {
+                            Glide.with(DrawerBaseActivity.this).load(profile).centerInside().into(imageProfile);
+                        }catch (Exception ignored) {
+
+                        }
+                        loadingProgress.dismiss();
+                    }
+                    else if (snapshot.child("vendor").hasChild(user.getUid())) {
+                        String profile = (String) snapshot.child("vendor").child(user.getUid()).child("ImageProfile").getValue();
+                        String firstName = (String) snapshot.child("vendor").child(user.getUid()).child("FirstName").getValue();
+                        String lastName = (String) snapshot.child("vendor").child(user.getUid()).child("LastName").getValue();
+
+                        name.setText(firstName + " " + lastName);
+                        try {
+                            Glide.with(DrawerBaseActivity.this).load(profile).centerInside().into(imageProfile);
+                            imageProfile.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    startActivity(new Intent(getApplicationContext(), MyAccount.class));
+                                }
+                            });
+                        }catch (Exception ignored) {
+
+                        }
+
+                        loadingProgress.dismiss();
+                    }
 
 
-        assert user != null;
-        databaseReference.child("users").child(user.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String type = (String)snapshot.child("typeOfUser").getValue();
-                assert type != null;
-                if (type.equals("Consumer")) {
-                    hideItem();
                 }
-                else if (type.equals("Vendor")){
-                    hideAdmin();
-                }
-                else if (user.getUid().equals("y0HGN02WYaTK4GaefHjpSQUNzyz2")) {
-                    hidefromAdmin();
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    loadingProgress.dismiss();
+                }
+            });
+        }
 
-            }
-        });
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -91,8 +146,33 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
         drawerLayout.closeDrawer(GravityCompat.START);
 
         switch (item.getItemId()) {
-            case R.id.nav_home:
-                startActivity(new Intent(this, HomePage.class));
+            case R.id.nav_dashboard:
+                FirebaseAuth touAuth = FirebaseAuth.getInstance();
+                String typeOfUser = Objects.requireNonNull(touAuth.getCurrentUser()).getUid();
+                DatabaseReference dataRef = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
+                dataRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.child("vendor").hasChild(typeOfUser)) {
+                            startActivity(new Intent(DrawerBaseActivity.this, Dashboard.class));
+                            finish();
+                        }
+                        else if (snapshot.child("consumer").hasChild(typeOfUser)) {
+                            startActivity(new Intent(DrawerBaseActivity.this, HomePage.class));
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                overridePendingTransition(0, 0);
+                break;
+
+            case R.id.nav_dti:
+                startActivity(new Intent(this, SRPActivity.class));
                 overridePendingTransition(0, 0);
                 break;
 
@@ -101,8 +181,13 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
                 overridePendingTransition(0, 0);
                 break;
 
-            case R.id.nav_profile:
-                startActivity(new Intent(this, MyProfileActivity.class));
+            case R.id.nav_account:
+                startActivity(new Intent(this, MyAccount.class));
+                overridePendingTransition(0, 0);
+                break;
+
+            case R.id.nav_reviews:
+                startActivity(new Intent(this, Reviews.class));
                 overridePendingTransition(0, 0);
                 break;
 
@@ -111,23 +196,8 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
                 overridePendingTransition(0, 0);
                 break;
 
-            case R.id.nav_dtisrp:
-                startActivity(new Intent(this, SRPActivity.class));
-                overridePendingTransition(0, 0);
-                break;
-
             case R.id.nav_about:
                 startActivity(new Intent(this, AboutActivity.class));
-                overridePendingTransition(0, 0);
-                break;
-
-            case R.id.nav_pending:
-                startActivity(new Intent(this, PendingUsers.class));
-                overridePendingTransition(0, 0);
-                break;
-
-            case R.id.nav_active:
-                startActivity(new Intent(this, ActiveUsers.class));
                 overridePendingTransition(0, 0);
                 break;
 
@@ -160,33 +230,12 @@ public class DrawerBaseActivity extends AppCompatActivity implements NavigationV
     }
     private void hideItem()
     {
+        // SHOW ONLY NAV FOR CONSUMERS
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_profile).setVisible(false);
         nav_Menu.findItem(R.id.nav_upload).setVisible(false);
-        nav_Menu.findItem(R.id.nav_pending).setVisible(false);
-        nav_Menu.findItem(R.id.nav_active).setVisible(false);
-        invalidateOptionsMenu();
-    }
-
-    private void hidefromAdmin() {
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_home).setVisible(false);
-        nav_Menu.findItem(R.id.nav_category).setVisible(false);
-        nav_Menu.findItem(R.id.nav_dtisrp).setVisible(false);
-        nav_Menu.findItem(R.id.nav_about).setVisible(false);
-        nav_Menu.findItem(R.id.nav_profile).setVisible(false);
-        nav_Menu.findItem(R.id.nav_upload).setVisible(false);
-        invalidateOptionsMenu();
-    }
-
-    private void hideAdmin() {
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_pending).setVisible(false);
-        nav_Menu.findItem(R.id.nav_active).setVisible(false);
-        invalidateOptionsMenu();
+        nav_Menu.findItem(R.id.nav_account).setVisible(false);
+        nav_Menu.findItem(R.id.nav_reviews).setVisible(false);
     }
 
     protected void allocateActivityTitle(String titleString) {

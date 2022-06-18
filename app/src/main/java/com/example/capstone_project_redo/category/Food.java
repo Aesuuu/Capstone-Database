@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,8 @@ public class Food extends DrawerBaseActivity implements CategoryInsideAdapter.On
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
     ProgressDialog loadingProgress;
+
+    String order;
 
     RecyclerView insideList;
     CategoryInsideAdapter categoryInsideAdapter;
@@ -73,7 +76,7 @@ public class Food extends DrawerBaseActivity implements CategoryInsideAdapter.On
 
         FirebaseRecyclerOptions<CategoryInsideModel> options;
         options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Food"), CategoryInsideModel.class)
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Food").orderByChild("name"), CategoryInsideModel.class)
                 .build();
 
         categoryInsideAdapter = new CategoryInsideAdapter(this, options);
@@ -99,7 +102,7 @@ public class Food extends DrawerBaseActivity implements CategoryInsideAdapter.On
     }
 
     @Override
-    public void onCategoryClick(int position) {
+    public void onCategoryClick(int position, View itemView) {
 
     }
 
@@ -121,22 +124,6 @@ public class Food extends DrawerBaseActivity implements CategoryInsideAdapter.On
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.filter_food, menu);
-
-        filterMeat = menu.findItem(R.id.filterMeat).setVisible(true);
-        filterProcessed = menu.findItem(R.id.filterProcessed).setVisible(true);
-        filterSeafood = menu.findItem(R.id.filterSeafood).setVisible(true);
-        filterFruits = menu.findItem(R.id.filterFruits).setVisible(true);
-        filterVegetables = menu.findItem(R.id.filterVegetables).setVisible(true);
-
-        itemChicken = menu.findItem(R.id.itemChicken).setVisible(false);
-        itemPork = menu.findItem(R.id.itemPork).setVisible(false);
-        itemBeef = menu.findItem(R.id.itemBeef).setVisible(false);
-
-        itemFrozen = menu.findItem(R.id.itemFrozen).setVisible(false);
-        itemCanned = menu.findItem(R.id.itemCanned).setVisible(false);
-
-        itemFish = menu.findItem(R.id.itemFish).setVisible(false);
-        itemShellfish = menu.findItem(R.id.itemShellfish).setVisible(false);
 
         MenuItem item = menu.findItem(R.id.searchFood);
         SearchView searchView = (SearchView) item.getActionView();
@@ -178,78 +165,67 @@ public class Food extends DrawerBaseActivity implements CategoryInsideAdapter.On
         String seafood = "Seafood";
         switch (item.getItemId()) {
             case R.id.filterShowAllFood:
-                filterMeat.setVisible(true);
-                filterProcessed.setVisible(true);
-                filterSeafood.setVisible(true);
-                filterFruits.setVisible(true);
-                filterVegetables.setVisible(true);
-
-
-                itemChicken.setVisible(false);
-                itemPork.setVisible(false);
-                itemBeef.setVisible(false);
-                itemFrozen.setVisible(false);
-                itemCanned.setVisible(false);
-                itemFish.setVisible(false);
-                itemShellfish.setVisible(false);
+                order = "name";
                 filterShowAll();
                 return true;
             case R.id.filterMeat:
-                itemChicken.setVisible(true);
-                itemPork.setVisible(true);
-                itemBeef.setVisible(true);
-
-                filterFoodCat(meat);
+                order = "categorySub";
+                filterFoodCat(meat, order);
                 return true;
                 case R.id.itemChicken:
+                    order = "categorySub2";
                     String chicken = "Chicken";
-                    filterSubCat(chicken);
+                    filterFoodCat(chicken, order);
                     return true;
                 case R.id.itemPork:
+                    order = "categorySub2";
                     String pork = "Pork";
-                    filterSubCat(pork);
+                    filterFoodCat(pork, order);
                     return true;
                 case R.id.itemBeef:
+                    order = "categorySub2";
                     String beef = "Beef";
-                    filterSubCat(beef);
+                    filterFoodCat(beef, order);
                     return true;
 
             case R.id.filterProcessed:
-                itemFrozen.setVisible(true);
-                itemCanned.setVisible(true);
-
-                filterFoodCat(processed);
+                order = "categorySub";
+                filterFoodCat(processed, order);
                 return true;
                 case R.id.itemFrozen:
+                    order = "categorySub2";
                     String frozen = "Frozen";
-                    filterSubCat(frozen);
+                    filterFoodCat(frozen, order);
                     return true;
                 case R.id.itemCanned:
+                    order = "categorySub2";
                     String canned = "Canned";
-                    filterSubCat(canned);
+                    filterFoodCat(canned, order);
                     return true;
 
             case R.id.filterSeafood:
-                itemFish.setVisible(true);
-                itemShellfish.setVisible(true);
-
-                filterFoodCat(seafood);
+                order = "categorySub";
+                filterFoodCat(seafood, order);
                 return true;
                 case R.id.itemFish:
+                    order = "categorySub2";
                     String fish = "Fish";
-                    filterSubCat(fish);
+                    filterFoodCat(fish, order);
                     return true;
                 case R.id.itemShellfish:
+                    order = "categorySub2";
                     String shellfish = "Shellfish";
-                    filterSubCat(shellfish);
+                    filterFoodCat(shellfish, order);
                     return true;
             case R.id.filterFruits:
+                order = "categorySub";
                 String fruit = "Fruits";
-                filterHealth(fruit);
+                filterFoodCat(fruit, order);
                 return true;
             case R.id.filterVegetables:
+                order = "categorySub";
                 String vegetables = "Vegetables";
-                filterHealth(vegetables);
+                filterFoodCat(vegetables, order);
                 return true;
 
         }
@@ -260,7 +236,7 @@ public class Food extends DrawerBaseActivity implements CategoryInsideAdapter.On
     private void filterShowAll() {
         FirebaseRecyclerOptions<CategoryInsideModel> options;
         options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Food"), CategoryInsideModel.class)
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Food").orderByChild("name"), CategoryInsideModel.class)
                 .build();
 
         categoryInsideAdapter = new CategoryInsideAdapter(this, options);
@@ -269,43 +245,12 @@ public class Food extends DrawerBaseActivity implements CategoryInsideAdapter.On
 
     }
 
-    private void filterFoodCat(String str) {
-        filterMeat.setVisible(false);
-        filterProcessed.setVisible(false);
-        filterSeafood.setVisible(false);
-        filterFruits.setVisible(false);
-        filterVegetables.setVisible(false);
+    private void filterFoodCat(String str, String orderBy) {
 
         FirebaseRecyclerOptions<CategoryInsideModel> options;
         options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Food")
-                        .orderByChild("categorySub").equalTo(str), CategoryInsideModel.class)
-                .build();
-
-        categoryInsideAdapter = new CategoryInsideAdapter(this, options);
-        categoryInsideAdapter.startListening();
-        insideList.setAdapter(categoryInsideAdapter);
-
-    }
-
-    private void filterHealth(String str) {
-        FirebaseRecyclerOptions<CategoryInsideModel> options;
-        options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Food")
-                        .orderByChild("categorySub").equalTo(str), CategoryInsideModel.class)
-                .build();
-
-        categoryInsideAdapter = new CategoryInsideAdapter(this, options);
-        categoryInsideAdapter.startListening();
-        insideList.setAdapter(categoryInsideAdapter);
-
-    }
-
-    private void filterSubCat(String str) {
-        FirebaseRecyclerOptions<CategoryInsideModel> options;
-        options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Food")
-                        .orderByChild("categorySub2").equalTo(str), CategoryInsideModel.class)
+                        .orderByChild(orderBy).equalTo(str), CategoryInsideModel.class)
                 .build();
 
         categoryInsideAdapter = new CategoryInsideAdapter(this, options);

@@ -3,6 +3,10 @@ package com.example.capstone_project_redo.category;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,6 +32,7 @@ public class CraftedGoods extends DrawerBaseActivity implements CategoryInsideAd
     DatabaseReference databaseReference = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
     ProgressDialog loadingProgress;
 
+    String type = "name";
     RecyclerView insideList;
     CategoryInsideAdapter categoryInsideAdapter;
     com.example.capstone_project_redo.databinding.CategoryInsideBinding insideBinding;
@@ -69,7 +74,7 @@ public class CraftedGoods extends DrawerBaseActivity implements CategoryInsideAd
 
         FirebaseRecyclerOptions<CategoryInsideModel> options;
         options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Crafted Goods"), CategoryInsideModel.class)
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Crafted Goods").orderByChild(type), CategoryInsideModel.class)
                 .build();
 
         categoryInsideAdapter = new CategoryInsideAdapter(this, options);
@@ -95,7 +100,67 @@ public class CraftedGoods extends DrawerBaseActivity implements CategoryInsideAd
     }
 
     @Override
-    public void onCategoryClick(int position) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_items, menu);
+        MenuItem item = menu.findItem(R.id.pSearch);
+
+        SearchView searchView = (SearchView) item.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                txtSearch(query, type);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                txtSearch(query, type);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.pName:
+                item.setChecked(true);
+                type = "name";
+                return true;
+            case R.id.pSeller:
+                item.setChecked(true);
+                type = "seller";
+                return true;
+            case R.id.pPrice:
+                item.setChecked(true);
+                type = "price";
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void txtSearch(String str, String type) {
+
+        FirebaseRecyclerOptions<CategoryInsideModel> options;
+        options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Crafted Goods")
+                        .orderByChild(type).startAt(str).endAt(str+"~"), CategoryInsideModel.class)
+                .build();
+
+        categoryInsideAdapter = new CategoryInsideAdapter(this, options);
+        categoryInsideAdapter.startListening();
+        insideList.setAdapter(categoryInsideAdapter);
+
+    }
+
+    @Override
+    public void onCategoryClick(int position, View itemView) {
 
     }
 
@@ -104,5 +169,4 @@ public class CraftedGoods extends DrawerBaseActivity implements CategoryInsideAd
         startActivity(new Intent(CraftedGoods.this, CategoryProduct.class));
         finish();
     }
-
 }

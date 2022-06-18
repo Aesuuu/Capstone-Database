@@ -6,13 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".nav.AboutActivity">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardLearnMore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="6dp"
+        app:cardCornerRadius="6dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Are you a vendor? If yes then click the 'Apply Now' button to get a vendor account!"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:padding="10dp"/>
+
+            <Button
+                android:id="@+id/btn_applyNow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apply Now"
+                android:textAllCaps="false"
+                android:layout_margin="10dp"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lv_faqList"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/cardLearnMore" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

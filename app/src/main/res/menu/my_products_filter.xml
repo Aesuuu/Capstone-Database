@@ -9,20 +9,33 @@
         app:showAsAction="ifRoom"
         app:actionViewClass="android.widget.SearchView"/>
 
-    <item
-        android:id="@+id/filterShowAll"
-        android:title="Show All"
-        app:showAsAction="collapseActionView"/>
-    <item
-        android:id="@+id/filterFood"
-        android:title="Food Only"
-        app:showAsAction="collapseActionView"/>
-    <item
-        android:id="@+id/filterCrafts"
-        android:title="Crafted Goods Only"
-        app:showAsAction="collapseActionView"/>
-    <item
-        android:id="@+id/filterHousehold"
-        android:title="Basic Necessities Only"
-        app:showAsAction="collapseActionView"/>
+    <group>
+        <item
+            android:title="Select Category:"
+            android:titleCondensed="Search Options:"
+            app:showAsAction="never"
+            android:checkable="false"/>
+        <item
+            android:id="@+id/filterShowAll"
+            android:title="Show All"
+            app:showAsAction="collapseActionView"/>
+        <item
+            android:id="@+id/filterFood"
+            android:title="Food"
+            app:showAsAction="collapseActionView"/>
+        <item
+            android:id="@+id/filterCrafts"
+            android:title="Crafted Goods"
+            app:showAsAction="collapseActionView"/>
+        <item
+            android:id="@+id/filterBasic"
+            android:title="Basic Necessities"
+            app:showAsAction="collapseActionView"/>
+        <item
+            android:id="@+id/filterMisc"
+            android:title="Miscellaneous"
+            app:showAsAction="collapseActionView"/>
+    </group>
+
+
 </menu>

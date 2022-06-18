@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="6dp"
+    android:elevation="6dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_rVisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_rPicture"
+                android:layout_width="80dp"
+                android:layout_height="0dp"
+                android:background="@color/main_color_dark"
+                android:padding="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_rTotal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_rName" />
+
+            <TextView
+                android:id="@+id/tv_rName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/main_color"
+                android:maxLines="3"
+                android:padding="10dp"
+                android:text="Reviewer name"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_rPicture"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="24dp"
+                android:layout_height="0dp"
+                android:background="@color/smoky"
+                android:paddingStart="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_rTotal"
+                app:layout_constraintStart_toEndOf="@+id/iv_rPicture"
+                app:layout_constraintTop_toTopOf="@+id/tv_rTotal"
+                app:srcCompat="@drawable/ic_star" />
+
+            <TextView
+                android:id="@+id/tv_rTotal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/smoky"
+                android:maxLines="5"
+                android:padding="10dp"
+                android:text="Answer"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView12"
+                app:layout_constraintTop_toBottomOf="@+id/tv_rName" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tv_rDesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:maxLines="5"
+            android:padding="10dp"
+            android:text="Description"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_rVisible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

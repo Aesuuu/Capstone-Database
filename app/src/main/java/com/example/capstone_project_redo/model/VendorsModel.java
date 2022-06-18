@@ -2,22 +2,25 @@ package com.example.capstone_project_redo.model;
 
 public class VendorsModel {
 
-    String ImageProfile, Username, FirstName, LastName, MobileNumber, Municipality, Province, StallDescription, id;
+    String ImageProfile, Username, FirstName, LastName, EmailAddress, Password, MobileNumber, MarketAddress, StallDescription, id, OverallScore, Raters;
 
     VendorsModel() {
 
     }
 
-    public VendorsModel(String imageProfile, String username, String firstName, String lastName, String mobileNumber, String municipality, String province, String stallDescription, String id) {
+    public VendorsModel(String imageProfile, String username, String firstName, String lastName, String emailAddress, String password, String mobileNumber, String marketAddress, String stallDescription, String id, String overallScore, String raters) {
         ImageProfile = imageProfile;
         Username = username;
         FirstName = firstName;
         LastName = lastName;
+        EmailAddress = emailAddress;
+        Password = password;
         MobileNumber = mobileNumber;
-        Municipality = municipality;
-        Province = province;
+        MarketAddress = marketAddress;
         StallDescription = stallDescription;
         this.id = id;
+        OverallScore = overallScore;
+        Raters = raters;
     }
 
     public String getImageProfile() {
@@ -52,6 +55,22 @@ public class VendorsModel {
         LastName = lastName;
     }
 
+    public String getEmailAddress() {
+        return EmailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        EmailAddress = emailAddress;
+    }
+
+    public String getPassword() {
+        return Password;
+    }
+
+    public void setPassword(String password) {
+        Password = password;
+    }
+
     public String getMobileNumber() {
         return MobileNumber;
     }
@@ -60,20 +79,12 @@ public class VendorsModel {
         MobileNumber = mobileNumber;
     }
 
-    public String getMunicipality() {
-        return Municipality;
+    public String getMarketAddress() {
+        return MarketAddress;
     }
 
-    public void setMunicipality(String municipality) {
-        Municipality = municipality;
-    }
-
-    public String getProvince() {
-        return Province;
-    }
-
-    public void setProvince(String province) {
-        Province = province;
+    public void setMarketAddress(String marketAddress) {
+        MarketAddress = marketAddress;
     }
 
     public String getStallDescription() {
@@ -90,5 +101,21 @@ public class VendorsModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOverallScore() {
+        return OverallScore;
+    }
+
+    public void setOverallScore(String overallScore) {
+        OverallScore = overallScore;
+    }
+
+    public String getRaters() {
+        return Raters;
+    }
+
+    public void setRaters(String raters) {
+        Raters = raters;
     }
 }

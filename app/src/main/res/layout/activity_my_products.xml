@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".nav.MyProductsActivity">
 
+    <TextView
+        android:id="@+id/tv_noItemsTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No products at the moment."
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/myItemsContainer"
+        app:layout_constraintEnd_toEndOf="@+id/myItemsContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <FrameLayout
         android:id="@+id/myItemsContainer"
         android:layout_width="match_parent"

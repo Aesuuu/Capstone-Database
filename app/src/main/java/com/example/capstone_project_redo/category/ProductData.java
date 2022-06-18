@@ -3,15 +3,21 @@ package com.example.capstone_project_redo.category;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.capstone_project_redo.DrawerBaseActivity;
 import com.example.capstone_project_redo.R;
+import com.example.capstone_project_redo.ReportVendor;
 import com.example.capstone_project_redo.databinding.ViewholderProductDataBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +33,7 @@ public class ProductData extends DrawerBaseActivity {
 
     ImageView imageUrl;
     TextView name, seller, category, desc, mobile, price;
+    ImageView report;
 
     ViewholderProductDataBinding productDataBinding;
 
@@ -71,6 +78,34 @@ public class ProductData extends DrawerBaseActivity {
                 String priceTxt = (String) snapshot.child("price").getValue();
                 String priceExTxt = (String) snapshot.child("priceExtension").getValue();
                 String imageUrlTxt = (String) snapshot.child("imageUrl").getValue();
+                String sellerId = (String) snapshot.child("id").getValue();
+
+                report = findViewById(R.id.btn_productReport);
+                report.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                        builder.setTitle("Report this vendor?");
+                        builder.setMessage("Press 'Yes' to confirm.");
+
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent =  new Intent(ProductData.this, ReportVendor.class);
+                                intent.putExtra("idTxt", sellerId);
+                                intent.putExtra("username", sellerTxt);
+                                startActivity(intent);
+                            }
+                        });
+
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        });
+                        builder.show();
+                    }
+                });
 
                 // SET TEXT TO TEXTVIEW
                 name.setText(nameTxt);

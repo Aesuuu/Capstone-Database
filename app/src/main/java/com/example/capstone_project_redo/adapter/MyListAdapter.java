@@ -108,6 +108,20 @@ public class MyListAdapter extends FirebaseRecyclerAdapter<MyListModel, MyListAd
                                     @Override
                                     public void onSuccess(Void aVoid) {
 
+                                        FirebaseDatabase.getInstance().getReference().child("products").child(model.getCategory()).child(currentUser).child(getRef(position).getKey()).updateChildren(map)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+
+                                                    }
+                                                });
+
                                         FirebaseDatabase.getInstance().getReference().child("categories").child(model.getCategory()).child(getRef(position).getKey()).updateChildren(map)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
@@ -147,11 +161,14 @@ public class MyListAdapter extends FirebaseRecyclerAdapter<MyListModel, MyListAd
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        FirebaseDatabase.getInstance().getReference().child("categories")
+                                .child(model.getCategory()).child(getRef(position).getKey()).removeValue();
+
                         FirebaseDatabase.getInstance().getReference().child("products").child(currentUser)
                                 .child(getRef(position).getKey()).removeValue();
 
-                        FirebaseDatabase.getInstance().getReference().child("categories")
-                                .child(getRef(position).getKey()).removeValue();
+                        FirebaseDatabase.getInstance().getReference().child("products").child(model.getCategory())
+                                .child(currentUser).child(getRef(position).getKey()).removeValue();
 
                     }
                 });

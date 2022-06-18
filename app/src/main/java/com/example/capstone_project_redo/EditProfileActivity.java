@@ -17,7 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.capstone_project_redo.nav.MyProfileActivity;
+import com.example.capstone_project_redo.nav.HomePage;
+import com.example.capstone_project_redo.nav.MyAccount;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +27,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -40,9 +40,8 @@ public class EditProfileActivity extends AppCompatActivity {
     Uri imageUri;
     ProgressDialog progressDialog;
     String imageProofUrl;
-    String stringGlide;
 
-    EditText editfirstname, editlastname, editage, editmunicipality, editprovince, editmobile;
+    EditText editfirstname, editlastname, editMarket, editmobile, editStall;
     Button Updateprofile, selectImageBtn, clearImageBtn;
     ImageView addProfileImage;
 
@@ -54,10 +53,9 @@ public class EditProfileActivity extends AppCompatActivity {
         //Profile Information ID
         editfirstname = findViewById(R.id.e_firstname);
         editlastname = findViewById(R.id.e_lastname);
-        editage = findViewById(R.id.e_age);
-        editmunicipality = findViewById(R.id.e_municipality);
-        editmobile = findViewById(R.id.e_mobilenumber);
-        editprovince = findViewById(R.id.e_province);
+        editMarket = findViewById(R.id.e_marketAdd);
+        editmobile = findViewById(R.id.e_mobile);
+        editStall = findViewById(R.id.et_stallDesc);
         addProfileImage = findViewById(R.id.iv_addProfileImage);
 
         //Button ID
@@ -93,7 +91,7 @@ public class EditProfileActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //Toast.makeText(this, "" + user.getUid(), Toast.LENGTH_SHORT).show();
 
-        databaseReference = database.getReference("users").child(user.getUid());
+        databaseReference = database.getReference("users").child("vendor").child(user.getUid());
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -101,18 +99,16 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 String firstName = (String) snapshot.child("FirstName").getValue();
                 String lastName = (String) snapshot.child("LastName").getValue();
-                String age = (String) snapshot.child("Age").getValue();
-                String municipality = (String) snapshot.child("Municipality").getValue();
-                String province = (String) snapshot.child("Province").getValue();
                 String mobile = (String) snapshot.child("MobileNumber").getValue();
+                String marketAdd = (String) snapshot.child("MarketAddress").getValue();
+                String stallDesc = (String) snapshot.child("StallDescription").getValue();
                 String url = (String) snapshot.child("ImageProfile").getValue();
 
                 editfirstname.setText(firstName);
                 editlastname.setText(lastName);
-                editage.setText(age);
-                editmunicipality.setText(municipality);
-                editprovince.setText(province);
                 editmobile.setText(mobile);
+                editMarket.setText(marketAdd);
+                editStall.setText(stallDesc);
 
                 Glide.with(getApplicationContext()).load(url).into(addProfileImage);
 
@@ -122,26 +118,24 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         final String firstname_edit = editfirstname.getText().toString();
                         final String lastname_edit = editlastname.getText().toString();
-                        final String age_edit = editage.getText().toString();
-                        final String province_edit = editprovince.getText().toString();
-                        final String municipality_edit = editmunicipality.getText().toString();
                         final String mobile_edit = editmobile.getText().toString();
+                        final String market_edit = editMarket.getText().toString();
+                        final String stall_edit = editStall.getText().toString();
 
 
                         if (addProfileImage.getDrawable() == null) {
                             Toast.makeText(EditProfileActivity.this, "Please select an image", Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            if (firstname_edit.isEmpty() || lastname_edit.isEmpty() || age_edit.isEmpty() || province_edit.isEmpty() || municipality_edit.isEmpty() || mobile_edit.isEmpty()) {
+                            if (firstname_edit.isEmpty() || lastname_edit.isEmpty() || mobile_edit.isEmpty() || market_edit.isEmpty() || stall_edit.isEmpty()) {
                                 Toast.makeText(EditProfileActivity.this, "Please Fill all fields", Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 databaseReference.child("FirstName").setValue(firstname_edit);
                                 databaseReference.child("LastName").setValue(lastname_edit);
-                                databaseReference.child("Age").setValue(age_edit);
                                 databaseReference.child("MobileNumber").setValue(mobile_edit);
-                                databaseReference.child("Municipality").setValue(municipality_edit);
-                                databaseReference.child("Province").setValue(province_edit);
+                                databaseReference.child("MarketAddress").setValue(market_edit);
+                                databaseReference.child("StallDescription").setValue(stall_edit);
 
                                 uploadImage();
 
@@ -159,7 +153,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             private void ProfileTransition() {
-                Intent intent = new Intent(EditProfileActivity.this, MyProfileActivity.class);
+                Intent intent = new Intent(EditProfileActivity.this, MyAccount.class);
                 startActivity(intent);
             }
         });
@@ -192,5 +186,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
             }
         }
+    }
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(EditProfileActivity.this, MyAccount.class));
+        finish();
     }
 }

@@ -149,7 +149,7 @@ public class AddItemActivity extends AppCompatActivity {
     private void uploadData() {
 
         imageUploadProgress = new ProgressDialog(this);
-        imageUploadProgress.setTitle("Uploading File...");
+        imageUploadProgress.setTitle("Uploading Product...");
         imageUploadProgress.show();
 
         productName = findViewById(R.id.et_productName);
@@ -219,8 +219,29 @@ public class AddItemActivity extends AppCompatActivity {
                         }
                         Toast.makeText(AddItemActivity.this,"Successfully Uploaded Data",Toast.LENGTH_SHORT).show();
 
+                        // UPLOADS DATA TO "PRODUCTS" FOR QUERIES
+                        databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("productId").setValue(productKey);
+                        databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("name").setValue(productNameTxt);
+                        databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("price").setValue(productPriceTxt);
+                        databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("priceExtension").setValue(priceExtensionTxt);
+                        databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("description").setValue(productDescTxt);
+                        databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("imageUrl").setValue(productImageUrl);
+                        databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("dateUploaded").setValue(filename);
+                        if (subCatItem == null && subCat2Item == null) {
+                            databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("category").setValue(mainCatItem);
+                        }
+                        else if (subCatItem != null && subCat2Item == null) {
+                            databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("category").setValue(mainCatItem);
+                            databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("categorySub").setValue(subCatItem);
+                        }
+                        else {
+                            databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("category").setValue(mainCatItem);
+                            databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("categorySub").setValue(subCatItem);
+                            databaseReference.child("products").child(mainCatItem).child(currentUser).child(productKey).child("categorySub2").setValue(subCat2Item);
+                        }
 
-                        userNameRef = database.getReference("users").child(user.getUid());
+                        // UPLOADS PRODUCT TO CATEGORIES
+                        userNameRef = database.getReference("users").child("vendor").child(user.getUid());
                         userNameRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -337,7 +358,7 @@ public class AddItemActivity extends AppCompatActivity {
         });
 
         List<String> mainCategoryList = new ArrayList<>();
-        Collections.addAll(mainCategoryList, "Select Category","Food","Household Essentials","Crafted Goods");
+        Collections.addAll(mainCategoryList, "Select Category","Food","Basic Necessities","Crafted Goods","Miscellaneous");
 
         // THE MAIN CATEGORY
         ArrayAdapter<String> mainCatAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mainCategoryList);
@@ -368,7 +389,7 @@ public class AddItemActivity extends AppCompatActivity {
                     subCategoryList.clear();
                     subCategory.setVisibility(View.GONE);
                     subCategory2.setVisibility(View.GONE);
-                    mainCatItem = "Household Essentials";
+                    mainCatItem = "Basic Necessities";
                 }
                 else if (i==3) {
                     dropDownCheck = "f";
@@ -377,6 +398,14 @@ public class AddItemActivity extends AppCompatActivity {
                     subCategory.setVisibility(View.GONE);
                     subCategory2.setVisibility(View.GONE);
                     mainCatItem = "Crafted Goods";
+                }
+                else if (i==4) {
+                    dropDownCheck = "f";
+                    dropDownCheck2 = "f";
+                    subCategoryList.clear();
+                    subCategory.setVisibility(View.GONE);
+                    subCategory2.setVisibility(View.GONE);
+                    mainCatItem = "Miscellaneous";
                 }
             }
 

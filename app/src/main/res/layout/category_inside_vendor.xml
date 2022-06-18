@@ -7,20 +7,22 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="83dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:elevation="6dp"
                 app:cardCornerRadius="6dp"
                 app:cardUseCompatPadding="true">
@@ -35,13 +37,13 @@
                         android:layout_width="80dp"
                         android:layout_height="80dp" />
 
-
                     <TextView
                         android:id="@id/tv_vendorUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@+id/iv_vendorPic"
+                        android:maxLines="2"
                         android:text="Vendor Username"
                         android:textColor="@color/black"
                         android:textSize="20sp"
@@ -54,6 +56,7 @@
                         android:layout_below="@+id/tv_vendorUsername"
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@+id/iv_vendorPic"
+                        android:maxLines="2"
                         android:text="Vendor Name"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
@@ -69,12 +72,52 @@
                         android:textColor="@color/black"
                         android:textSize="20sp" />
 
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_vendorNumber"
+                        android:layout_marginTop="5dp"
+                        app:srcCompat="@drawable/ic_star" />
+
+                    <TextView
+                        android:id="@+id/tv_totalRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_vendorNumber"
+                        android:layout_marginTop="5dp"
+                        android:layout_toRightOf="@+id/imageView5"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_vendorNumber"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_toRightOf="@+id/tv_totalRating"
+                        app:srcCompat="@drawable/ic_user" />
+
+                    <TextView
+                        android:id="@+id/tv_usersRated"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_vendorNumber"
+                        android:layout_marginTop="5dp"
+                        android:layout_toRightOf="@+id/imageView6"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
                     <View
                         android:id="@+id/view2"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_below="@+id/tv_vendorNumber"
+                        android:layout_below="@+id/imageView5"
+                        android:layout_marginTop="5dp"
                         android:background="@color/smoky" />
 
                     <TextView
@@ -94,8 +137,8 @@
                         android:layout_marginTop="10dp"
                         android:text="Stall Description"
                         android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_vendorStall"
@@ -106,10 +149,20 @@
                         android:textSize="20sp" />
 
                     <Button
-                        android:id="@+id/btn_vendorDetails"
+                        android:id="@+id/btn_vendorMap"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_vendorStall"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@color/smoky"
+                        android:text="View on Map"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/btn_vendorDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/btn_vendorMap"
                         android:layout_marginTop="5dp"
                         android:backgroundTint="@color/white"
                         android:text="Show More"
@@ -119,11 +172,13 @@
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
+
             <Button
                 android:id="@+id/btn_rateVendor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:backgroundTint="@color/dark_teal"
                 android:text="Rate Vendor" />
 
             <androidx.cardview.widget.CardView
@@ -137,11 +192,76 @@
                 app:cardCornerRadius="6dp"
                 app:cardUseCompatPadding="true">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/lv_vendorProducts"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="600dp" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_vUserProducts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/main_color"
+                        android:padding="10dp"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/lv_vendorProducts"
+                        android:layout_width="match_parent"
+                        android:layout_height="500dp"
+                        android:layout_below="@+id/tv_vUserProducts" />
+
+                </RelativeLayout>
+
             </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewReviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:elevation="6dp"
+                app:cardCornerRadius="6dp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_vUserReviews"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/main_color_dark"
+                        android:padding="10dp"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="16dp"
+                        android:text="Reviews"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/lv_vendorReviews"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_below="@+id/tv_vUserReviews"
+                        android:layout_marginTop="-1dp" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <Button
+                android:id="@+id/btn_reportVendor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:backgroundTint="@color/maroon"
+                android:text="Report Vendor" />
+
         </LinearLayout>
     </ScrollView>
 

@@ -37,7 +37,6 @@ public class ConsumerRegister extends AppCompatActivity {
         cancel = findViewById(R.id.btn_cCancel);
         register = findViewById(R.id.btn_cRegister);
 
-        progressDialog = new ProgressDialog(this);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,6 +48,11 @@ public class ConsumerRegister extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                progressDialog = new ProgressDialog(ConsumerRegister.this);
+                progressDialog.setMessage("Creating your account...");
+                progressDialog.show();
+
                 email = findViewById(R.id.et_cEmail);
                 password = findViewById(R.id.et_cPassword);
                 cPassword = findViewById(R.id.et_cConfirmPassword);
@@ -63,19 +67,24 @@ public class ConsumerRegister extends AppCompatActivity {
 
                 if (emailTxt.equals("") || passwordTxt.equals("") || cPasswordTxt.equals("") || firstNameTxt.equals("") || lastNameTxt.equals("")) {
                     Toast.makeText(ConsumerRegister.this, "Fill all fields.", Toast.LENGTH_SHORT).show();
+                    uAuth.signOut();
                 }
                 else {
                     if (passwordTxt.length() < 6) {
                         Toast.makeText(ConsumerRegister.this, "Password too short", Toast.LENGTH_SHORT).show();
+                        uAuth.signOut();
                     }
                     else {
                         if (!passwordTxt.equals(cPasswordTxt)) {
                             Toast.makeText(ConsumerRegister.this, "Password does not match", Toast.LENGTH_SHORT).show();
+                            uAuth.signOut();
                         }
                         else {
                             register(emailTxt, passwordTxt, firstNameTxt, lastNameTxt);
                             uAuth.signOut();
+                            progressDialog.dismiss();
                             startActivity(new Intent(ConsumerRegister.this, LoginActivity.class));
+                            finish();
                         }
                     }
                 }
@@ -83,8 +92,6 @@ public class ConsumerRegister extends AppCompatActivity {
         });
     }
     public void register(String email, String pass, String first, String last) {
-        progressDialog.setMessage("Creating your account...");
-        progressDialog.show();
 
         uAuth.createUserWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -102,21 +109,21 @@ public class ConsumerRegister extends AppCompatActivity {
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            databaseReference.child("users").child(uAuth.getCurrentUser().getUid()).child("FirstName").setValue(first);
-                                            databaseReference.child("users").child(uAuth.getCurrentUser().getUid()).child("LastName").setValue(last);
-                                            databaseReference.child("users").child(uAuth.getCurrentUser().getUid()).child("EmailAddress").setValue(email);
-                                            databaseReference.child("users").child(uAuth.getCurrentUser().getUid()).child("Password").setValue(pass);
-                                            databaseReference.child("users").child(uAuth.getCurrentUser().getUid()).child("typeOfUser").setValue("Consumer");
-                                            databaseReference.child("users").child(uAuth.getCurrentUser().getUid()).child("ImageProfile").setValue("https://firebasestorage.googleapis.com/v0/b/loginregister-f1e0d.appspot.com/o/categoryImages%2Fuser_sample.png?alt=media&token=1e2439b9-ac42-4b67-aa95-73ce677c7624");
+                                            String user = uAuth.getCurrentUser().getUid();
+                                            databaseReference.child("users").child("consumer").child(user).child("id").setValue(user);
+                                            databaseReference.child("users").child("consumer").child(user).child("FirstName").setValue(first);
+                                            databaseReference.child("users").child("consumer").child(user).child("LastName").setValue(last);
+                                            databaseReference.child("users").child("consumer").child(user).child("EmailAddress").setValue(email);
+                                            databaseReference.child("users").child("consumer").child(user).child("Password").setValue(pass);
+                                            databaseReference.child("users").child("consumer").child(user).child("ImageProfile").setValue("https://firebasestorage.googleapis.com/v0/b/loginregister-f1e0d.appspot.com/o/categoryImages%2Fuser_sample.png?alt=media&token=1e2439b9-ac42-4b67-aa95-73ce677c7624");
 
                                             Toast.makeText(ConsumerRegister.this, "Verification mail has been sent to your email.", Toast.LENGTH_SHORT).show();
                                             Toast.makeText(ConsumerRegister.this, "Verify your Email to complete registration", Toast.LENGTH_LONG).show();
-                                            progressDialog.dismiss();
                                         }
                                     });
                         }}
                         else {
-                            progressDialog.dismiss();
+                            uAuth.signOut();
                             Toast.makeText(ConsumerRegister.this, "Invalid Email or Email has already been taken", Toast.LENGTH_SHORT).show();
                         }
                     }

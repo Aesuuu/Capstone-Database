@@ -4,7 +4,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -17,6 +16,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.capstone_project_redo.databinding.ActivityCreateAccountPart1Binding;
+import com.example.capstone_project_redo.databinding.ActivitySrpBinding;
+import com.example.capstone_project_redo.nav.AboutActivity;
+import com.example.capstone_project_redo.nav.HomePage;
+import com.example.capstone_project_redo.nav.MyAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,7 +28,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,136 +37,129 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
-public class CreateAccountPart1 extends AppCompatActivity {
+public class CreateAccountPart1 extends DrawerBaseActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
     StorageReference uItemStorageRef;
     FirebaseAuth uAuth;
     Uri imageUri;
-    ProgressDialog progressDialog;
+    ProgressDialog loadingProgress;
     String imageProofUrl;
 
-    EditText registerEmail, registerPassword, confirmPassword;
+    EditText username, mobile, address, stall;
 
-    Button selectImageBtn, clearImageBtn, uploadDataBtn;
+    Button select, clear, submit;
     ImageView addValidationImage;
+
+    ActivityCreateAccountPart1Binding createAccountPart1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_account_part1);
+        createAccountPart1 = ActivityCreateAccountPart1Binding.inflate(getLayoutInflater());
+        setContentView(createAccountPart1.getRoot());
+        allocateActivityTitle("Vendor Application Form");
 
         uAuth = FirebaseAuth.getInstance();
-        selectImageBtn = findViewById(R.id.btn_registerSelectImg);
-        clearImageBtn = findViewById(R.id.btn_registerClearImg);
+        select = findViewById(R.id.btn_registerSelectImg);
+        clear = findViewById(R.id.btn_registerClearImg);
+        submit = findViewById(R.id.btn_regApply);
         addValidationImage = findViewById(R.id.iv_validationImage);
-        uploadDataBtn = findViewById(R.id.btn_continue);
 
+        username = findViewById(R.id.et_regUsername);
+        mobile = findViewById(R.id.et_regMobile);
+        address = findViewById(R.id.et_regMarket);
+        stall = findViewById(R.id.et_regStall);
 
-        progressDialog = new ProgressDialog(this);
-
-        selectImageBtn.setOnClickListener(v -> mGetImage.launch("image/*"));
-        clearImageBtn.setOnClickListener(new View.OnClickListener() {
+        select.setOnClickListener(v -> mGetImage.launch("image/*"));
+        clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addValidationImage.setImageResource(0);
             }
         });
 
-        Button goToLogIn = (Button)findViewById(R.id.logInGuest);
-        goToLogIn.setOnClickListener(new View.OnClickListener() {
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CreateAccountPart1.this, LoginActivity.class));
-            }
-        });
+                loadingProgress = new ProgressDialog(CreateAccountPart1.this);
+                loadingProgress.setMessage("Please wait while we fetch your data");
+                loadingProgress.setCancelable(false);
+                loadingProgress.show();
 
-        uploadDataBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                registerEmail = findViewById(R.id.register_email);
-                registerPassword = findViewById(R.id.register_password);
-                confirmPassword = findViewById(R.id.confirm_password);
-                String registerEmailTxt = registerEmail.getText().toString();
-                String registerPasswordTxt = registerPassword.getText().toString();
-                String confirmPasswordTxt = confirmPassword.getText().toString();
+                String usernameTxt = username.getText().toString();
+                String mobileTxt = mobile.getText().toString();
+                String addressTxt = address.getText().toString();
+                String stallTxt = stall.getText().toString();
 
-                if (registerEmailTxt.trim().equals("") || registerPasswordTxt.trim().equals("") || confirmPasswordTxt.trim().equals("")) {
+                if (usernameTxt.equals("") || mobileTxt.equals("") || addressTxt.equals("") || stallTxt.equals("")) {
                     Toast.makeText(CreateAccountPart1.this, "Fill all fields", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    if (registerPasswordTxt.length() < 6) {
-                        Toast.makeText(CreateAccountPart1.this, "Password too short", Toast.LENGTH_SHORT).show();
+                    loadingProgress.dismiss();
+                } else {
+                    if (addValidationImage.getDrawable() == null) {
+                        Toast.makeText(CreateAccountPart1.this, "Please select an image", Toast.LENGTH_SHORT).show();
+                        loadingProgress.dismiss();
                     }
                     else {
-                        if (!registerPasswordTxt.equals(confirmPasswordTxt)) {
-                            Toast.makeText(CreateAccountPart1.this, "Password does not match", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            if (addValidationImage.getDrawable()==null) {
-                                Toast.makeText(CreateAccountPart1.this, "Please select an image", Toast.LENGTH_SHORT).show();
+                        String currentUser = uAuth.getCurrentUser().getUid();
+                        uploadImage();
+
+                        databaseReference.child("users").child("consumer").child(currentUser).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String email = (String)snapshot.child("EmailAddress").getValue();
+                                String password = (String)snapshot.child("Password").getValue();
+                                String firstName = (String)snapshot.child("FirstName").getValue();
+                                String lastName = (String)snapshot.child("LastName").getValue();
+                                String url = (String)snapshot.child("ImageProfile").getValue();
+
+                                Map<String,Object> map = new HashMap<>();
+                                map.put("id", currentUser);
+                                map.put("EmailAddress", email);
+                                map.put("Password", password);
+                                map.put("FirstName", firstName);
+                                map.put("LastName", lastName);
+                                map.put("ImageProfile", url);
+                                map.put("Username", usernameTxt);
+                                map.put("MobileNumber", mobileTxt);
+                                map.put("MarketAddress", addressTxt);
+                                map.put("StallDescription", stallTxt);
+
+                                databaseReference.child("pendingRequest").child("unread").child(currentUser).updateChildren(map)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                doOnce();
+                                                Toast.makeText(CreateAccountPart1.this, "Vendor application form has been sent to management", Toast.LENGTH_SHORT).show();
+                                                loadingProgress.dismiss();
+                                                startActivity(new Intent(CreateAccountPart1.this, AboutActivity.class));
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(CreateAccountPart1.this, "Failed to send vendor application form. Try again after 24 hours.", Toast.LENGTH_SHORT).show();
+                                                loadingProgress.dismiss();
+                                                startActivity(new Intent(CreateAccountPart1.this, AboutActivity.class));
+                                            }
+                                        });
                             }
-                            else {
-                                register(view);
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                loadingProgress.dismiss();
                             }
-                        }
+                        });
                     }
                 }
             }
         });
-    }
-
-    public void register(View view) {
-
-        registerEmail = findViewById(R.id.register_email);
-        registerPassword = findViewById(R.id.register_password);
-        String registerEmailTxt = registerEmail.getText().toString();
-        String registerPasswordTxt = registerPassword.getText().toString();
-
-        progressDialog.setMessage("Please wait");
-        progressDialog.show();
-
-        uAuth.createUserWithEmailAndPassword(registerEmailTxt, registerPasswordTxt)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            uAuth.getCurrentUser().sendEmailVerification()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(CreateAccountPart1.this, "First part completed", Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(CreateAccountPart1.this, "A verification email was sent to your email account", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-
-                            uAuth.signInWithEmailAndPassword(registerEmailTxt, registerPasswordTxt)
-                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                uploadImage();
-                                                Intent i = new Intent(CreateAccountPart1.this, CreateAccountPart2.class);
-                                                i.putExtra("email", registerEmailTxt);
-                                                i.putExtra("password", registerPasswordTxt);
-                                                startActivity(i);
-                                            }
-
-                                        }
-                                    });
-                        }
-                        else {
-                            progressDialog.dismiss();
-                            Toast.makeText(CreateAccountPart1.this, "Invalid Email or Email has already been taken", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
     }
 
     // This enables users to pick an image,then receive its uri
@@ -198,7 +194,7 @@ public class CreateAccountPart1 extends AppCompatActivity {
                             imageProofUrl = uri.toString();
 
                             databaseReference = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
-                            databaseReference.child("users").child(uid).child("imageProof").setValue(imageProofUrl);
+                            databaseReference.child("pendingRequest").child("unread").child(uid).child("ImageProof").setValue(imageProofUrl);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -208,5 +204,77 @@ public class CreateAccountPart1 extends AppCompatActivity {
                 }
             });
         }
+    }
+
+
+    public void doOnce() {
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        //startSomethingOnce();
+        switch (day) {
+            case 1: {
+                String dayTxt = "sunday";
+                totalToday(dayTxt);
+                break;
+            }
+            case 2: {
+                String dayTxt = "monday";
+                totalToday(dayTxt);
+                break;
+            }
+            case 3: {
+                String dayTxt = "tuesday";
+                totalToday(dayTxt);
+                break;
+            }
+            case 4: {
+                String dayTxt = "wednesday";
+                totalToday(dayTxt);
+                break;
+            }
+            case 5: {
+                String dayTxt = "thursday";
+                totalToday(dayTxt);
+                break;
+            }
+            case 6: {
+                String dayTxt = "friday";
+                totalToday(dayTxt);
+                break;
+            }
+            case 7: {
+                String dayTxt = "saturday";
+                totalToday(dayTxt);
+                break;
+            }
+        }
+    }
+
+    public void totalToday(String dayTxt) {
+        DatabaseReference dataRef = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
+        dataRef.child("statistics").child("requests").child("pending").child(dayTxt).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.hasChild("total")) {
+                    dataRef.child("statistics").child("requests").child("pending").child(dayTxt).child("total").setValue(1);
+                }
+                else {
+                    long total = (long) Objects.requireNonNull(snapshot.child("total").getValue());
+                    dataRef.child("statistics").child("requests").child("pending").child(dayTxt).child("total").setValue(total + 1);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(CreateAccountPart1.this, AboutActivity.class));
+        finish();
     }
 }

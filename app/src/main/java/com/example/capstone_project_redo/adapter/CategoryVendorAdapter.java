@@ -60,8 +60,10 @@ public class CategoryVendorAdapter extends FirebaseRecyclerAdapter<VendorsModel,
                 String name = model.getFirstName() + " " + model.getLastName();
                 String mobile = model.getMobileNumber();
                 String vendorID = model.getId();
-                String vendorAddress = model.getMunicipality() + ", " + model.getProvince();
+                String vendorAddress = model.getMarketAddress();
                 String vendorStall = model.getStallDescription();
+                String overallScore = model.getOverallScore();
+                String raters = model.getRaters();
 
                 Intent intent =  new Intent(holder.itemView.getContext(), VendorData.class);
 
@@ -72,6 +74,8 @@ public class CategoryVendorAdapter extends FirebaseRecyclerAdapter<VendorsModel,
                 intent.putExtra("id", vendorID);
                 intent.putExtra("address", vendorAddress);
                 intent.putExtra("stall", vendorStall);
+                intent.putExtra("overallScore", overallScore);
+                intent.putExtra("raters", raters);
                 view.getContext().startActivity(intent);
 
             }

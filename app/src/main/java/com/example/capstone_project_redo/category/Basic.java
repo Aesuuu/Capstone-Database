@@ -3,6 +3,12 @@ package com.example.capstone_project_redo.category;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -11,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.capstone_project_redo.DrawerBaseActivity;
 import com.example.capstone_project_redo.R;
 import com.example.capstone_project_redo.adapter.CategoryInsideAdapter;
+import com.example.capstone_project_redo.adapter.CategoryVendorAdapter;
 import com.example.capstone_project_redo.databinding.CategoryInsideBinding;
 import com.example.capstone_project_redo.model.CategoryInsideModel;
+import com.example.capstone_project_redo.model.VendorsModel;
 import com.example.capstone_project_redo.nav.CategoryProduct;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +30,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Objects;
+
+import static android.content.ContentValues.TAG;
 
 public class Basic extends DrawerBaseActivity implements CategoryInsideAdapter.OnProductListener{
 
@@ -29,11 +41,13 @@ public class Basic extends DrawerBaseActivity implements CategoryInsideAdapter.O
     DatabaseReference databaseReference = database.getReferenceFromUrl("https://loginregister-f1e0d-default-rtdb.firebaseio.com");
     ProgressDialog loadingProgress;
 
+    String type = "name";
     RecyclerView insideList;
     CategoryInsideAdapter categoryInsideAdapter;
     CategoryInsideBinding insideBinding;
 
-    private ArrayList<CategoryInsideModel> mCraft = new ArrayList<>();
+    private ArrayList<CategoryInsideModel> mFood = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +62,7 @@ public class Basic extends DrawerBaseActivity implements CategoryInsideAdapter.O
         loadingProgress.show();
 
         loadData();
+
     }
 
     @Override
@@ -70,7 +85,7 @@ public class Basic extends DrawerBaseActivity implements CategoryInsideAdapter.O
 
         FirebaseRecyclerOptions<CategoryInsideModel> options;
         options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
-                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Basic Necessities"), CategoryInsideModel.class)
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Basic Necessities").orderByChild(type), CategoryInsideModel.class)
                 .build();
 
         categoryInsideAdapter = new CategoryInsideAdapter(this, options);
@@ -95,7 +110,68 @@ public class Basic extends DrawerBaseActivity implements CategoryInsideAdapter.O
     }
 
     @Override
-    public void onCategoryClick(int position) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_items, menu);
+        MenuItem item = menu.findItem(R.id.pSearch);
+
+        SearchView searchView = (SearchView) item.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                txtSearch(query, type);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                txtSearch(query, type);
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.pName:
+                item.setChecked(true);
+                type = "name";
+                return true;
+            case R.id.pSeller:
+                item.setChecked(true);
+                type = "seller";
+                return true;
+            case R.id.pPrice:
+                item.setChecked(true);
+                type = "price";
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void txtSearch(String str, String type) {
+
+        FirebaseRecyclerOptions<CategoryInsideModel> options;
+        options = new FirebaseRecyclerOptions.Builder<CategoryInsideModel>()
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").child("Basic Necessities")
+                        .orderByChild(type).startAt(str).endAt(str+"~"), CategoryInsideModel.class)
+                .build();
+
+        categoryInsideAdapter = new CategoryInsideAdapter(this, options);
+        categoryInsideAdapter.startListening();
+        insideList.setAdapter(categoryInsideAdapter);
+
+    }
+
+    @Override
+    public void onCategoryClick(int position, View itemView) {
+        Log.d(TAG, "onCategoryClick: clicked");
 
     }
 

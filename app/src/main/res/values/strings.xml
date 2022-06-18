@@ -11,7 +11,7 @@
     <string name="menu_upload">My Products</string>
     <string name="menu_profile">My Profile</string>
     <string name="menu_category">Categories</string>
-    <string name="menu_dtisrp">DTI SRP List</string>
+    <string name="menu_dtisrp">DTI SRP Pricelist</string>
     <string name="menu_about">About</string>
     <string name="menu_logout">Log Out</string>
     <!-- ADMIN NAV -->
@@ -43,6 +43,7 @@
 
     <!-- CATEGORIES -->
     <string name="Username">Username</string>
+    <string name="title_activity_maps">Map</string>
 
     <!-- MAIN CATEGORY-->
     <!-- SUB CATEGORY-->
